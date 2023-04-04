@@ -40,10 +40,10 @@ fn make_mid(sections: &Vec<Section>, start: &str, mid: &str, end: &str) -> Strin
     let mut buf = format!("{}{}", starter, start);
     for sec in sections {
         buf.push_str(format!("\x1b[38;2;{}m", sec.background.to_colcode_frag()).as_str());
-        buf.push('');
+        buf.push('');
         buf.push_str(sec.to_string().as_str());
         buf.push_str(format!("\x1b[38;2;{}m", sec.background.to_colcode_frag()).as_str());
-        buf.push('');
+        buf.push('');
         buf.push_str(starter);
         buf.push_str(mid);
     }
