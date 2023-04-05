@@ -1,10 +1,10 @@
-use std::str::FromStr;
+use std::{str::FromStr, ops::{Add, Sub}};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct RGB {
-    r: u8,
-    g: u8,
-    b: u8,
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
 }
 
 impl FromStr for RGB {
@@ -24,6 +24,27 @@ impl FromStr for RGB {
 
         Ok(RGB { r, g, b })
     }
+}
+
+impl Add for RGB {
+    type Output = RGB;
+    fn add(self, rhs: Self) -> Self::Output {
+        let r = self.r.saturating_add(rhs.r);
+        let g = self.g.saturating_add(rhs.g);
+        let b = self.b.saturating_add(rhs.b);
+        RGB {r, g, b}
+    }
+}
+
+impl Sub for RGB {
+    type Output = RGB;
+    fn sub(self, rhs: Self) -> Self::Output {
+        let r = self.r.saturating_sub(rhs.r);
+        let g = self.g.saturating_sub(rhs.g);
+        let b = self.b.saturating_sub(rhs.b);
+        RGB {r, g, b}
+    }
+
 }
 
 impl From<&str> for RGB {
