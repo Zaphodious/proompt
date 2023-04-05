@@ -104,7 +104,6 @@ impl ProgramInput {
             }
         }
 
-        dbg!(&input);
         input
     }
 }

@@ -4,6 +4,7 @@ use crate::programinput::{ProgramInput, Section};
 use crate::rgb::RGB;
 use rand::prelude::*;
 use rand::seq::SliceRandom;
+use std::io::Write;
 use std::process::Command;
 use std::str::Chars;
 
@@ -15,7 +16,7 @@ const ROOT_BAK: &str = "\x1b[48;2;100;0;0m";
 const CLEARCOL: &str = "\x1b[0m";
 
 const CLOUD_SYMBOLS: &str = "ع˖⁺⋆୭∞*.⋆｡⋆༶⋆˙⊹୭˚○◦˚.˚◦○˚୧";
-const TRAINENDS: [&str; 5] = [" ", "", " ", "█", " "];
+const TRAINENDS: [&str; 5] = [" ", "█", " █", "█", "█"];
 
 fn rand_clouds(count: usize) -> String {
     let mut rng = thread_rng();
@@ -66,6 +67,7 @@ fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> Strin
         buf.push_str(CLEARCOL);
         buf.push_str(str::repeat(" ", space_end).as_str());
     }
+    buf.push_str("\n");
     return buf;
 }
 
@@ -86,6 +88,7 @@ fn make_bottom(input: &ProgramInput, space_front: usize, space_end: usize) -> St
         determine_neutral_color(input),
         CLEARCOL,
     );
+    buf.push_str("\n");
 
     return buf;
 }
@@ -117,6 +120,7 @@ fn make_mid(input: &ProgramInput, start: &str, mid: &str, end: &str) -> String {
         buf.push_str(CLEARCOL);
     }
     buf.push_str(CLEARCOL);
+    buf.push_str("\n");
     return buf;
 }
 
@@ -126,12 +130,13 @@ fn main() {
     let top = make_top(&input, 3, 3);
     let bottom = make_bottom(&input, 2, 1);
     let mid = make_mid(&input, "", " ", "╯");
-    let all = [top.as_str(), mid.as_str(), bottom.as_str(), "\x1b[0m"].join("\n");
+    let mut all = [top.as_str(), mid.as_str(), bottom.as_str()].join("");//, "\x1b[0m  "].join("\n");
     //println!("{}", top);
     //    println!("{}", rgb.to_colcode_frag());
     //println!("{}", mid);
     //println!("{}", bottom);
-    print!("{}", all);
+    //print!("{}", all);
+    std::io::stdout().write(all.as_bytes());
     //https://www.cyberciti.biz/faq/turn-off-color-in-linux-terminal-bash-session/
     //println!("\x1b[48;2;{}mHello, world!\x1b[0m\n", rgb.to_colcode_frag());
     //    println!("{}", rgb.to_colcode_frag());
