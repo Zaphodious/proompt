@@ -8,12 +8,12 @@ use std::io::Write;
 use std::process::Command;
 use std::str::Chars;
 
-const NEUTRAL_COLOR: &str = "\x1b[38;2;100;100;100m";
-const NEUTRAL_BAK: &str = "\x1b[48;2;100;100;100m";
-const NEUTRAL_BAK_F: &str = "\x1b[38;2;100;100;100m";
-const ROOT_COL: &str = "\x1b[38;2;100;0;0m";
-const ROOT_BAK: &str = "\x1b[48;2;100;0;0m";
-const CLEARCOL: &str = "\x1b[0m";
+const NEUTRAL_COLOR: &str = "\\[\x1b[38;2;100;100;100m\\]";
+const NEUTRAL_BAK: &str = "\\[\x1b[48;2;100;100;100m\\]";
+const NEUTRAL_BAK_F: &str = "\\[\x1b[38;2;100;100;100m\\]";
+const ROOT_COL: &str = "\\[\x1b[38;2;100;0;0m\\]";
+const ROOT_BAK: &str = "\\[\x1b[48;2;100;0;0m\\]";
+const CLEARCOL: &str = "\\[\x1b[0m\\]";
 
 const CLOUD_SYMBOLS: &str = "ع˖⁺⋆୭∞*.⋆｡⋆༶⋆˙⊹୭˚○◦˚.˚◦○˚୧";
 const TRAINENDS: [&str; 5] = [" ", "█", " █", "█", "█"];
@@ -56,13 +56,13 @@ fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> Strin
             };
         let len = seg.text.len();
         buf.push_str(str::repeat(" ", space_front - 3).as_str());
-        buf.push_str(format!("\x1b[38;2;{}m", darkercol.to_colcode_frag()).as_str());
+        buf.push_str(format!("\\[\x1b[38;2;{}m\\]", darkercol.to_colcode_frag()).as_str());
         //buf.push('╭');
         //buf.push_str(str::repeat("═", len - 2).as_str());
         buf.push_str(rand_clouds(len + 1).as_str());
         //buf.push('╮');
         buf.push_str(CLEARCOL);
-        buf.push_str(format!("\x1b[38;2;{}m", col.to_colcode_frag()).as_str());
+        buf.push_str(format!("\\[\x1b[38;2;{}m\\]", col.to_colcode_frag()).as_str());
         buf.push('╖');
         buf.push_str(CLEARCOL);
         buf.push_str(str::repeat(" ", space_end).as_str());
@@ -72,9 +72,9 @@ fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> Strin
 }
 
 fn make_bottom(input: &ProgramInput, space_front: usize, space_end: usize) -> String {
-    let fg = format!("\x1b[38;2;{}m", input.carrotfg.to_colcode_frag());
+    let fg = format!("\\[\x1b[38;2;{}m\\]", input.carrotfg.to_colcode_frag());
     let bg = if let Some(r) = input.carrotbg {
-        format!("\x1b[48;2;{}m", r.to_colcode_frag())
+        format!("\\[\x1b[48;2;{}m\\]", r.to_colcode_frag())
     } else {
         determine_neutral_bak(input).to_string()
     };
@@ -100,14 +100,14 @@ fn make_mid(input: &ProgramInput, start: &str, mid: &str, end: &str) -> String {
     buf.push(' ');
     let mut peaksects = sections.into_iter().peekable();
     while let Some(sec) = peaksects.next() {
-        buf.push_str(format!("\x1b[38;2;{}m", sec.background.to_colcode_frag()).as_str());
+        buf.push_str(format!("\\[\x1b[38;2;{}m\\]", sec.background.to_colcode_frag()).as_str());
         buf.push_str(determine_neutral_bak(input));
         //buf.push('');
         //buf.push('');
         buf.push_str(rand_train_end());
         //buf.push(' ');
         buf.push_str(sec.to_string().as_str());
-        buf.push_str(format!("\x1b[38;2;{}m", sec.background.to_colcode_frag()).as_str());
+        buf.push_str(format!("\\[\x1b[38;2;{}m\\]", sec.background.to_colcode_frag()).as_str());
         if peaksects.peek().is_some() {
             buf.push_str(determine_neutral_bak(input));
         }
