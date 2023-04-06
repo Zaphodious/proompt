@@ -29,6 +29,9 @@ Please always pass the ID of the current
 user via -i, as the program uses this to determine if it is running in a root
 shell to improve cross-platform compatability. 
 
+## Example
+
+![Example of trains theme](trains_example.png)
 
 ## Arguments
 
