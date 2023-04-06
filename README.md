@@ -7,7 +7,7 @@ Generates a prompt!
 With cargo, run `cargo install --git https://github.com/Zaphodious/proompt.git`,
 and reload your terminal.
 
-Then, copy the contents of [example.sh] into your .bashrc (or equivilant file),
+Then, copy the contents of [the example.sh file](example.sh) into your .bashrc (or equivilant file),
 making sure to replace your existing PS2 binding.
 
 # Fonts
