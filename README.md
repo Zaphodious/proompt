@@ -33,6 +33,8 @@ shell to improve cross-platform compatability.
 
 ![Example of trains theme](trains_example.png)
 
+Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
+
 ## Arguments
 
 | Argument | Flag | Parameters | Default | Note |
