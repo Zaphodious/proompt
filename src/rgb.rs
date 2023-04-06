@@ -60,4 +60,11 @@ impl RGB {
     pub fn to_colcode_frag(&self) -> String {
         format!("{};{};{}", &self.r, &self.g, &self.b)
     }
+
+    pub fn as_foreground(&self) -> String {
+        format!("\\[\x1b[38;2;{}m\\]", self.to_colcode_frag())
+    }
+    pub fn as_background(&self) -> String {
+        format!("\\[\x1b[48;2;{}m\\]", self.to_colcode_frag())
+    }
 }

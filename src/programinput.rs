@@ -1,7 +1,6 @@
 use crate::rgb::RGB;
 use std::env;
 use std::fmt::Display;
-use std::process::Command;
 
 #[derive(Debug, PartialEq)]
 pub struct Section {
@@ -47,13 +46,12 @@ pub struct ProgramInput {
 impl ProgramInput {
     pub fn new() -> ProgramInput {
         let defaultstring = String::from("default");
-        let defaultBG = String::from("000000");
-        let defaultFG = String::from("111111");
-        let emptystring = String::new();
+        let default_bg = String::from("000000");
+        let default_fg = String::from("111111");
         
 
         let mut input = ProgramInput {
-            themename: defaultstring.clone(),
+            themename: "trains".to_string(),
             sections: Vec::new(),
             carrot: "🮲 🮳".to_string(),
             //carrotfg: "#e00080".into(),
@@ -70,17 +68,9 @@ impl ProgramInput {
                     input.themename = themename;
                 }
                 "-s" => {
-                    let background: RGB = args.next().unwrap_or(defaultBG.clone()).as_str().into();
-                    let foreground: RGB = args.next().unwrap_or(defaultFG.clone()).as_str().into();
+                    let background: RGB = args.next().unwrap_or(default_bg.clone()).as_str().into();
+                    let foreground: RGB = args.next().unwrap_or(default_fg.clone()).as_str().into();
                     let text = args.next().unwrap_or(defaultstring.clone());
-                    let text = match text.as_str() {
-                        "@u" =>  {
-                            //let user_id:usize = env::var("EUID").unwrap_or("1").parse().unwrap_or(1);
-                            let username = env::var("USER").unwrap_or("batman".to_string());
-                            username
-                        }
-                        _ => text,
-                    };
                     input.sections.push(Section {
                         foreground,
                         background,
@@ -96,9 +86,6 @@ impl ProgramInput {
                 "-c" => {
                     let carrot = args.next().unwrap_or(input.carrot);
                     input.carrot = carrot;
-                }
-                "-g" => {
-                    
                 },
                 _ => (),
             }
