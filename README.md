@@ -16,6 +16,9 @@ The command accepts several arguments. The -i, -c, and -t flags are one-time,
 while any number of -s (Section) flags can be passed in and are what make up
 the prompt's content.
 
+Colors are accepted in six-digit hex format (eg. ff00aa, f76c59, 07102e),
+relying on full-color support from the terminal.
+
 Please always pass the ID of the current 
 user via -i, as the program uses this to determine if it is running in a root
 shell to improve cross-platform compatability. 
