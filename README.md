@@ -35,7 +35,7 @@ shell to improve cross-platform compatability.
 | Argument | Flag | Parameters | Default | Note |
 | --- | --- | --- | --- | --- |
 | User ID | -i | number | 1 | Used to detect if root. Please always pass. |
-| Prompt Carrot | -c | string | 🮲 🮳 | Default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
+| Prompt Carrot | -c | string | 🮲🮳 | Default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
 | Theme | -t | string | trains | Currently, only "trains" exists |
 | Section | -s | None | background-color foreground-color string | Displays the string as a section using the indicated colors |
 
