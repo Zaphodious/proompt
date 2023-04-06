@@ -10,6 +10,12 @@ and reload your terminal.
 Then, copy the contents of [example.sh] into your .bashrc (or equivilant file),
 making sure to replace your existing PS2 binding.
 
+# Fonts
+
+Please ensure that a [Nerd Font](https://www.nerdfonts.com/font-downloads)
+is being used. To use the default carrot, a [font with extended unicode symbols](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols?query=noto+sans+symbols)
+should also be installed on your system.
+
 ## Usage
 
 The command accepts several arguments. The -i, -c, and -t flags are one-time,
@@ -26,12 +32,12 @@ shell to improve cross-platform compatability.
 
 ## Arguments
 
-| Argument | Parameters | Default | Note |
-| --- | --- | --- | --- |
-| -i | number | 1 | ID of the user. Used to detect if root. Please always pass. |
-| -c | string | 🮲 🮳 | The prompt carrot (default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols?query=noto+sans+symbols)) |
-| -t | string | trains | The name of the theme. Currently, only "trains" exists |
-| -s | None | background-color foreground-color string | Displays the string using the indicated colors |
+| Argument | Flag | Parameters | Default | Note |
+| --- | --- | --- | --- | --- |
+| User ID | -i | number | 1 | Used to detect if root. Please always pass. |
+| Prompt Carrot | -c | string | 🮲 🮳 | Default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols?query=noto+sans+symbols) |
+| Theme | -t | string | trains | Currently, only "trains" exists |
+| Section | -s | None | background-color foreground-color string | Displays the string as a section using the indicated colors |
 
 ## Future
 
