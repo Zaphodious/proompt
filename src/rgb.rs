@@ -55,6 +55,7 @@ impl From<&str> for RGB {
         }
     }
 }
+pub const CLEARCOL: &str = "\\[\x1b[0m\\]";
 
 impl RGB {
     pub fn to_colcode_frag(&self) -> String {

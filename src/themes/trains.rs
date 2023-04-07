@@ -1,14 +1,7 @@
 use crate::programinput::ProgramInput;
-use crate::rgb::RGB;
+use crate::rgb::{RGB, CLEARCOL};
 use rand::prelude::*;
 use rand::seq::SliceRandom;
-use std::io::Write;
-
-const NEUTRAL_COLOR: &str = "\\[\x1b[38;2;100;100;100m\\]";
-const NEUTRAL_BAK: &str = "\\[\x1b[48;2;100;100;100m\\]";
-const ROOT_COL: &str = "\\[\x1b[38;2;100;0;0m\\]";
-const ROOT_BAK: &str = "\\[\x1b[48;2;100;0;0m\\]";
-const CLEARCOL: &str = "\\[\x1b[0m\\]";
 
 const CLOUD_SYMBOLS: &str = "ع˖⁺⋆୭∞*.⋆｡⋆༶⋆˙⊹୭˚○◦˚.˚◦○˚୧";
 const TRAINENDS: [&str; 5] = [" ", "█", " █", "█", "█"];
@@ -24,23 +17,8 @@ fn rand_train_end() -> &'static str {
     TRAINENDS.choose(&mut rng).unwrap_or(&" ")
 }
 
-fn determine_neutral_color(input: &ProgramInput) -> &'static str {
-    if input.isroot {
-        ROOT_COL
-    } else {
-        NEUTRAL_COLOR
-    }
-}
-fn determine_neutral_bak(input: &ProgramInput) -> &'static str {
-    if input.isroot {
-        ROOT_BAK
-    } else {
-        NEUTRAL_BAK
-    }
-}
-
 fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> String {
-    let mut buf = format!("{}", determine_neutral_color(input));
+    let mut buf = input.theme_col_fg().to_string();
     for seg in &input.sections {
         let col = seg.background;
         let darkercol = col
@@ -71,16 +49,16 @@ fn make_bottom(input: &ProgramInput) -> String {
     let bg = if let Some(r) = input.carrotbg {
        r.as_background()
     } else {
-        determine_neutral_bak(input).to_string()
+        input.theme_col_bg()
     };
     let mut buf = format!(
         "{}█{}{}{} {}{}{}",
-        determine_neutral_color(input),
+        input.theme_col_fg(),
         fg,
         bg,
         input.carrot,
         CLEARCOL,
-        determine_neutral_color(input),
+        input.theme_col_fg(),
         CLEARCOL,
     );
     buf.push_str("\n");
@@ -90,13 +68,13 @@ fn make_bottom(input: &ProgramInput) -> String {
 
 fn make_mid(input: &ProgramInput) -> String {
     let sections = &input.sections;
-    let mut buf = determine_neutral_color(input).to_string();
-    buf.push_str(determine_neutral_bak(input));
+    let mut buf = input.theme_col_fg().to_string();
+    buf.push_str(input.theme_col_bg().as_str());
     buf.push(' ');
     let mut peaksects = sections.into_iter().peekable();
     while let Some(sec) = peaksects.next() {
         buf.push_str(sec.background.as_foreground().as_str());
-        buf.push_str(determine_neutral_bak(input));
+        buf.push_str(input.theme_col_bg().as_str());
         //buf.push('');
         //buf.push('');
         buf.push_str(rand_train_end());
@@ -104,11 +82,11 @@ fn make_mid(input: &ProgramInput) -> String {
         buf.push_str(sec.to_string().as_str());
         buf.push_str(sec.background.as_foreground().as_str());
         if peaksects.peek().is_some() {
-            buf.push_str(determine_neutral_bak(input));
+            buf.push_str(input.theme_col_bg().as_str());
         }
         buf.push('');
         buf.push(' ');
-        buf.push_str(determine_neutral_color(input));
+        buf.push_str(input.theme_col_fg().as_str());
         if peaksects.peek().is_some() {
             buf.push_str(" ");
         }

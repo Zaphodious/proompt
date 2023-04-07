@@ -41,8 +41,9 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 | --- | --- | --- | --- | --- |
 | User ID | -i | number | 1 | Used to detect if root. Please always pass. |
 | Prompt Carrot | -c | string | 🮲🮳 | Default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
-| Theme | -t | string | trains | Currently, only "trains" exists |
+| Theme | -t | string color (optional) root-color (optional) motd (optional) | trains | Currently, only "trains" exists. Colors and motd used depending on theme |
 | Section | -s | background-color foreground-color string | None | Displays the string as a section using the indicated colors |
+| Solo Mode | --solo | None | None | Renders without the extra control strings used by the bash prompt system |
 
 ## Future
 
@@ -50,4 +51,5 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 - More themes 
 - ???
 - Profit...?
+
 
