@@ -1,6 +1,6 @@
 # Proompt Prompt Program
 
-Generates a prompt!
+Generates a Bash command-line prompt!
 
 ## Installation
 
@@ -29,6 +29,26 @@ Please always pass the ID of the current
 user via -i, as the program uses this to determine if it is running in a root
 shell to improve cross-platform compatability. 
 
+### Git 
+
+To use specially-formatted git display modules, it is necessary to first
+pass in the output of `$(git status --porcelain=v2 --branch 2>&1)` via -g. Then, any number of
+--git-s blocks can be passed in, that will be displayed depending on
+which of the three repository states are detected: all (displays regardless of
+status), committed, staged, or unstaged. Note that this allows for placing multiple
+git blocks, and for placing git blocks at arbitrary places in the prompt.
+
+For text passed into the sections, the following substitutions will be made:
+
+- @b will be replaced with the branch name
+- @u will be replaced with the upstream name
+- @+ will be replaced with the no. of commits ahead of upstream
+- @- will be replaced with the no. of commits behind upstream
+- @s will be replaced with the detected repo status
+
+If no text is provided, the string " @b ↑@+ ↓@-" will be used as default. (the 
+Nerd Font symbol for a git branch is used, which may not render in the browser.)
+ 
 ## Example
 
 ![Example of trains theme](trains_example.png)
@@ -41,9 +61,24 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 | --- | --- | --- | --- | --- |
 | User ID | -i | number | 1 | Used to detect if root. Please always pass. |
 | Prompt Carrot | -c | string | 🮲🮳 | Default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
-| Theme | -t | string color (optional) root-color (optional) motd (optional) | trains | Currently, only "trains" exists. Colors and motd used depending on theme |
+| Theme | -t | theme-name color (optional) root-color (optional) motd (optional) | trains | Currently, only "trains" exists. Colors and motd used depending on theme |
 | Section | -s | background-color foreground-color string | None | Displays the string as a section using the indicated colors |
 | Solo Mode | --solo | None | None | Renders without the extra control strings used by the bash prompt system |
+| Git Info | -g | output of `$(git status --porcelain=v2 --branch 2>&1)` | Used to compute other git display modules |
+| Git Section | --git-s | status background-color foreground-color text (optional) | Displayed if the kind is either "all", or matches the repo status |
+
+## Question?
+
+Q: Why is everthing passed in, instead of queried by the program or put into a config file?
+
+A: A few reasons. I wrote this program primarily for myself, and I wanted an 
+easier time changing my prompt theme then what I was getting with .oh-my-bash
+and the like. I also didn't want to have to manually add support for everthing 
+I wanted to display in my prompt. For passing in the user ID and getting git info: 
+I use this on multiple Linux distros as well as MacOS and don't want to
+worry about weird cross-platform compat bugs that arise from system calls 
+going weird. Even with git bash on Windows, passing things in is almost always
+going to work. 
 
 ## Future
 
@@ -51,5 +86,4 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 - More themes 
 - ???
 - Profit...?
-
 

@@ -1,7 +1,8 @@
+use crate::gitstatus::{parse_git_status, GitStatus, StagingStatus};
 use crate::rgb::RGB;
-use std::env;
+use std::env::Args;
 use std::fmt::Display;
-use crate::gitstatus::parse_git_status;
+use std::{env, iter::Peekable};
 
 #[derive(Debug, PartialEq)]
 pub struct Section {
@@ -10,6 +11,7 @@ pub struct Section {
     pub text: String,
     pub starting: String,
     pub ending: String,
+    pub specialkind: Option<SpecialKind>,
 }
 
 impl Display for Section {
@@ -34,6 +36,11 @@ impl Section {
 }
 
 #[derive(Debug, PartialEq)]
+pub enum SpecialKind {
+    Git(StagingStatus),
+}
+
+#[derive(Debug, PartialEq)]
 pub struct ProgramInput {
     pub themename: String,
     pub neutral_normal: RGB,
@@ -45,14 +52,15 @@ pub struct ProgramInput {
     pub sections: Vec<Section>,
     pub isroot: bool,
     pub solo_mode: bool,
+    pub gitstatus: Option<GitStatus>,
 }
+
+const DEFAULT_STRING: &str = "default";
+const DEFAULT_BG: &str = "000000";
+const DEFAULT_FG: &str = "111111";
 
 impl ProgramInput {
     pub fn new() -> ProgramInput {
-        let defaultstring = String::from("default");
-        let default_bg = String::from("000000");
-        let default_fg = String::from("111111");
-
         let mut input = ProgramInput {
             themename: "trains".to_string(),
             sections: Vec::new(),
@@ -65,8 +73,12 @@ impl ProgramInput {
             carrotbg: None,
             isroot: false,
             solo_mode: false,
+            gitstatus: None,
         };
         let mut args = env::args().peekable();
+
+        let mut gitstatus_cache: Option<GitStatus> = None;
+        let mut gitdefault_line: String = String::new();
 
         while let Some(word) = args.next() {
             match word.as_str() {
@@ -74,7 +86,7 @@ impl ProgramInput {
                     input.solo_mode = true;
                 }
                 "-t" => {
-                    let themename = args.next().unwrap_or(defaultstring.clone());
+                    let themename = args.next().unwrap_or(DEFAULT_STRING.to_string());
                     input.themename = themename;
                     if let Some(a) = args.peek() {
                         if !a.starts_with('-') {
@@ -95,17 +107,31 @@ impl ProgramInput {
                         }
                     }
                 }
-                "-s" => {
-                    let background: RGB = args.next().unwrap_or(default_bg.clone()).as_str().into();
-                    let foreground: RGB = args.next().unwrap_or(default_fg.clone()).as_str().into();
-                    let text = args.next().unwrap_or(defaultstring.clone());
-                    input.sections.push(Section {
-                        foreground,
-                        background,
-                        text,
-                        starting: "".to_string(),
-                        ending: "".to_string(),
-                    });
+                "-s" => input.sections.push(make_section(&mut args, "", None)),
+                "--git-s" => {
+                    if let Some(g) = &gitstatus_cache {
+                        let statuskind = args.next().unwrap();
+                        let status = match statuskind.as_str() {
+                            "all" => Some(g.staging_status),
+                            "committed" => Some(StagingStatus::Committed),
+                            "staged" => Some(StagingStatus::AllStaged),
+                            "unstaged" => Some(StagingStatus::UnstagedChanges),
+                            _ => None,
+                        };
+                        if let Some(s) = status {
+                            if s == g.staging_status {
+                                let mut sec = make_section(
+                                    &mut args,
+                                    gitdefault_line.as_str(),
+                                    Some(SpecialKind::Git(s)),
+                                );
+                                if sec.text != gitdefault_line {
+                                    sec.text = g.format_template(sec.text.as_str())
+                                }
+                                input.sections.push(sec);
+                            }
+                        }
+                    }
                 }
                 "-i" => {
                     let euid: usize = args.next().unwrap_or("1".to_string()).parse().unwrap_or(1);
@@ -114,15 +140,22 @@ impl ProgramInput {
                 "-c" => {
                     let carrot = args.next().unwrap_or(input.carrot);
                     input.carrot = carrot;
-                },
+                }
                 "-g" => {
                     let status = args.next().unwrap_or("".to_string());
-                    parse_git_status(status)
+                    let gitstatus = parse_git_status(status);
+                    if let Some(g) = &gitstatus {
+                        gitdefault_line = g.format_template(" @b ↑@+ ↓@-");
+                    }
+                    gitstatus_cache = gitstatus.clone();
+                    input.gitstatus = gitstatus;
                     //dbg!(status);
                 }
                 _ => (),
             }
         }
+
+        if let Some(g) = &input.gitstatus {}
 
         input
     }
@@ -139,5 +172,42 @@ impl ProgramInput {
         } else {
             self.neutral_normal.as_background()
         }
+    }
+}
+
+fn make_section(
+    args: &mut Peekable<Args>,
+    default_text: &str,
+    specialkind: Option<SpecialKind>,
+) -> Section {
+    let background: RGB = args
+        .next()
+        .unwrap_or(DEFAULT_BG.to_string())
+        .as_str()
+        .into();
+    let foreground: RGB = args
+        .next()
+        .unwrap_or(DEFAULT_FG.to_string())
+        .as_str()
+        .into();
+    let text = {
+        match args.peek() {
+            Some(s) => {
+                if s.starts_with("-") {
+                    default_text.to_string()
+                } else {
+                    args.next().unwrap()
+                }
+            }
+            None => default_text.to_string(),
+        }
+    };
+    Section {
+        foreground,
+        background,
+        text,
+        starting: "".to_string(),
+        ending: "".to_string(),
+        specialkind,
     }
 }

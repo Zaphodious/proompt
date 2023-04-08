@@ -1,15 +1,26 @@
-use std::{iter::Peekable, str::Split};
+use std::{iter::Peekable, str::Split, fmt::Display};
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Eq, PartialEq, PartialOrd, Ord, Clone)]
 pub struct GitStatus {
-    staging_status: StagingStatus,
-    branch: String,
-    upstream: String,
-    ahead: usize,
-    behind: usize,
+    pub staging_status: StagingStatus,
+    pub branch: String,
+    pub upstream: String,
+    pub ahead: usize,
+    pub behind: usize,
 }
 
-#[derive(Default, Debug, Clone, Copy)]
+impl GitStatus {
+    pub fn format_template(&self, template_string: &str) -> String {
+        template_string
+            .replace("@b", self.branch.as_str())
+            .replace("@u", self.upstream.as_str())
+            .replace("@s", self.staging_status.to_string().as_str())
+            .replace("@+", self.ahead.to_string().as_str())
+            .replace("@-", self.behind.to_string().as_str())
+    }
+}
+
+#[derive(Default, Debug, Clone, Copy, Eq, PartialEq, PartialOrd, Ord)]
 pub enum StagingStatus {
     UnstagedChanges,
     AllStaged,
@@ -30,20 +41,36 @@ impl StagingStatus {
     }
 }
 
-pub fn parse_git_status(porcelain: String) {
+impl Display for StagingStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::UnstagedChanges => f.write_str("Unstaged Changes"),
+            Self::AllStaged => f.write_str("Changes Staged"),
+            Self::Committed => f.write_str("Fully Committed"),
+        }
+    }
+}
+
+//" @b ↑@+ ↓@-"
+
+pub fn parse_git_status(porcelain: String) -> Option<GitStatus> {
     let lines: Vec<&str> = porcelain.split("\n").collect();
     let mut status = GitStatus::default();
     dbg!(&lines);
     for line in &lines {
         let words = line.split(" ").peekable();
-        parse_status_line(&mut status, words)
+        parse_status_line(&mut status, words)?
     }
     dbg!(&status);
+    return Some(status);
 }
 
-fn parse_status_line(status: &mut GitStatus, mut line: Peekable<Split<&str>>) {
+fn parse_status_line(status: &mut GitStatus, mut line: Peekable<Split<&str>>) -> Option<()> {
     while let Some(word) = line.next() {
         match word {
+            "fatal:" => {
+                return None;
+            }
             "#" => {
                 if let Some(headername) = line.next() {
                     match headername {
@@ -80,6 +107,7 @@ fn parse_status_line(status: &mut GitStatus, mut line: Peekable<Split<&str>>) {
             _ => (),
         }
     }
+    Some(())
 }
 
 //‘ ’	Unmodified
