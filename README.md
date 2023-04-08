@@ -10,7 +10,7 @@ and reload your terminal.
 Then, copy the contents of [the example.sh file](example.sh) into your .bashrc (or equivalent file),
 making sure to replace your existing PS2 binding.
 
-# Fonts
+## Fonts
 
 Please ensure that a [Nerd Font](https://www.nerdfonts.com/font-downloads)
 is being used. To use the default carrot, a [font with extended unicode symbols](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2)
@@ -18,8 +18,8 @@ should also be installed on your system.
 
 # Usage
 
-The command accepts several arguments. The -i, -c, and -t flags are one-time,
-while any number of -s (Section) flags can be passed in and are what make up
+The command accepts several arguments. The -i, -c, -g, and -t flags are one-time,
+while any number of -s (Section) and --git-s (Git Section) flags can be passed in and are what make up
 the prompt's content.
 
 Colors are accepted in six-digit hex format (eg. ff00aa, f76c59, 07102e),
@@ -29,15 +29,19 @@ Please always pass the ID of the current
 user via -i, as the program uses this to determine if it is running in a root
 shell. See [the Q and A](#question) for why.
 
-For arguments, see [Arguments](#arguments)
-
 ## Git 
 
 To use specially-formatted git display modules, it is necessary to first
 pass in the output of `$(git status --porcelain=v2 --branch 2>&1)` via -g. Then, any number of
 --git-s blocks can be passed in, that will be displayed depending on
-which of the three repository states are detected: all (displays regardless of
-status), committed, staged, or unstaged. Note that this allows for placing multiple
+which of the repository states are detected: 
+
+- all (displays regardless of status if the working dir is in a git repo)
+- committed (displays when there are no changes detected)
+- staged (displays when all changes are staged)
+- unstaged (displays when there are unstaged changes)
+
+Note that this allows for placing multiple
 git blocks, and for placing git blocks at arbitrary places in the prompt.
 
 For text passed into the sections, the following substitutions will be made:
@@ -54,14 +58,8 @@ If no text is provided, the string " @b ↑@+ ↓@-" will be used as default.
 Nerd Font symbol for a git branch is used, which may not render in the browser.)
 
 Note that this feature might not work in a broken or non-standard repo.
- 
-# Example
 
-![Example of trains theme](trains_example.png)
-
-Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
-
-# Arguments
+## Arguments
 
 | Argument | Flag | Parameters | Default | Note |
 | --- | --- | --- | --- | --- |
@@ -71,7 +69,13 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 | Section | -s | background-color foreground-color string | None | Displays the string as a section using the indicated colors |
 | Solo Mode | --solo | None | None | Renders without the extra control strings used by the bash prompt system |
 | Git Info | -g | output of `$(git status --porcelain=v2 --branch 2>&1)` | None | Used to compute other git display modules |
-| Git Section | --git-s | status background-color foreground-color text (optional) | The template string " @b ↑@+ ↓@-" | Displayed if the kind is either "all", or matches the repo status |
+| Git Section | --git-s | status background-color foreground-color text (optional) | The template string " @b ↑@+ ↓@-" | Displayed if the status is either "all", or matches the repo status (see [the git section](#git)) |
+
+# Example
+
+![Example of trains theme](trains_example.png)
+
+Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 
 # Question?
 
