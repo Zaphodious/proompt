@@ -7,7 +7,7 @@ Generates a Bash command-line prompt!
 With cargo, run `cargo install --git https://github.com/Zaphodious/proompt.git`,
 and reload your terminal.
 
-Then, copy the contents of [the example.sh file](example.sh) into your .bashrc (or equivilant file),
+Then, copy the contents of [the example.sh file](example.sh) into your .bashrc (or equivalent file),
 making sure to replace your existing PS2 binding.
 
 # Fonts
@@ -16,7 +16,7 @@ Please ensure that a [Nerd Font](https://www.nerdfonts.com/font-downloads)
 is being used. To use the default carrot, a [font with extended unicode symbols](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2)
 should also be installed on your system.
 
-## Usage
+# Usage
 
 The command accepts several arguments. The -i, -c, and -t flags are one-time,
 while any number of -s (Section) flags can be passed in and are what make up
@@ -27,9 +27,11 @@ relying on full-color support from the terminal.
 
 Please always pass the ID of the current 
 user via -i, as the program uses this to determine if it is running in a root
-shell to improve cross-platform compatability. 
+shell. See [the Q and A](#question) for why.
 
-### Git 
+For arguments, see [Arguments](#arguments)
+
+## Git 
 
 To use specially-formatted git display modules, it is necessary to first
 pass in the output of `$(git status --porcelain=v2 --branch 2>&1)` via -g. Then, any number of
@@ -53,13 +55,13 @@ Nerd Font symbol for a git branch is used, which may not render in the browser.)
 
 Note that this feature might not work in a broken or non-standard repo.
  
-## Example
+# Example
 
 ![Example of trains theme](trains_example.png)
 
 Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 
-## Arguments
+# Arguments
 
 | Argument | Flag | Parameters | Default | Note |
 | --- | --- | --- | --- | --- |
@@ -68,25 +70,27 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 | Theme | -t | theme-name color (optional) root-color (optional) motd (optional) | trains | Currently, only "trains" exists. Colors and motd used depending on theme |
 | Section | -s | background-color foreground-color string | None | Displays the string as a section using the indicated colors |
 | Solo Mode | --solo | None | None | Renders without the extra control strings used by the bash prompt system |
-| Git Info | -g | output of `$(git status --porcelain=v2 --branch 2>&1)` | Used to compute other git display modules |
-| Git Section | --git-s | status background-color foreground-color text (optional) | Displayed if the kind is either "all", or matches the repo status |
+| Git Info | -g | output of `$(git status --porcelain=v2 --branch 2>&1)` | None | Used to compute other git display modules |
+| Git Section | --git-s | status background-color foreground-color text (optional) | The template string " @b ↑@+ ↓@-" | Displayed if the kind is either "all", or matches the repo status |
 
-## Question?
+# Question?
 
 Q: Why is everthing passed in, instead of queried by the program or put into a config file?
 
 A: A few reasons. I wrote this program primarily for myself, and I wanted an 
 easier time customizing my prompt theme then what I was getting with .oh-my-bash
 and the like. I also didn't want to have to manually add support for everything 
-I wanted to display in my prompt. For passing in the user ID and getting git info: 
-I use this program on multiple Linux distros as well as MacOS and don't want to
+I wanted to display in my prompt.
+
+Q: But, why do you pass in the user ID and git info?
+
+A: I use this program on multiple Linux distros as well as MacOS and don't want to
 worry about weird cross-platform compat bugs that arise from system calls 
 going weird. Even with git bash on Windows, passing things in is almost always
 going to work. 
 
 ## Future
 
-- Git support
 - More themes 
 - ???
 - Profit...?
