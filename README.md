@@ -45,9 +45,13 @@ For text passed into the sections, the following substitutions will be made:
 - @+ will be replaced with the no. of commits ahead of upstream
 - @- will be replaced with the no. of commits behind upstream
 - @s will be replaced with the detected repo status
+- @i will be replaced with a unicode symbol representing the detected repo status
+- @e will be replaced with an emoji representing the detected repo status
 
 If no text is provided, the string " @b ↑@+ ↓@-" will be used as default. (the 
 Nerd Font symbol for a git branch is used, which may not render in the browser.)
+
+Note that this feature might not work in a broken or non-standard repo.
  
 ## Example
 
@@ -72,10 +76,10 @@ Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 Q: Why is everthing passed in, instead of queried by the program or put into a config file?
 
 A: A few reasons. I wrote this program primarily for myself, and I wanted an 
-easier time changing my prompt theme then what I was getting with .oh-my-bash
-and the like. I also didn't want to have to manually add support for everthing 
+easier time customizing my prompt theme then what I was getting with .oh-my-bash
+and the like. I also didn't want to have to manually add support for everything 
 I wanted to display in my prompt. For passing in the user ID and getting git info: 
-I use this on multiple Linux distros as well as MacOS and don't want to
+I use this program on multiple Linux distros as well as MacOS and don't want to
 worry about weird cross-platform compat bugs that arise from system calls 
 going weird. Even with git bash on Windows, passing things in is almost always
 going to work. 

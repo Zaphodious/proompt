@@ -14,6 +14,8 @@ impl GitStatus {
         template_string
             .replace("@b", self.branch.as_str())
             .replace("@u", self.upstream.as_str())
+            .replace("@i", self.staging_status.get_icon().as_str())
+            .replace("@e", self.staging_status.get_emoji().as_str())
             .replace("@s", self.staging_status.to_string().as_str())
             .replace("@+", self.ahead.to_string().as_str())
             .replace("@-", self.behind.to_string().as_str())
@@ -39,14 +41,30 @@ impl StagingStatus {
             Self::Committed => other,
         }
     }
+
+    fn get_icon(&self) -> String {
+        match self {
+            Self::UnstagedChanges => "🗴",
+            Self::AllStaged => "•",
+            Self::Committed => "✔",
+        }.to_string()
+    }
+    fn get_emoji(&self) -> String {
+        match self {
+            Self::UnstagedChanges => "🤨",
+            Self::AllStaged => "😅",
+            Self::Committed => "😎",
+        }.to_string()
+
+    }
 }
 
 impl Display for StagingStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::UnstagedChanges => f.write_str("Unstaged Changes"),
-            Self::AllStaged => f.write_str("Changes Staged"),
-            Self::Committed => f.write_str("Fully Committed"),
+            Self::UnstagedChanges => f.write_str("Unstaged"),
+            Self::AllStaged => f.write_str("Staged"),
+            Self::Committed => f.write_str("Committed"),
         }
     }
 }

@@ -2,6 +2,7 @@ use crate::programinput::ProgramInput;
 use crate::rgb::{RGB, CLEARCOL};
 use rand::prelude::*;
 use rand::seq::SliceRandom;
+use unicode_segmentation::UnicodeSegmentation;
 
 const CLOUD_SYMBOLS: &str = "ع˖⁺⋆୭∞*.⋆｡⋆༶⋆˙⊹୭˚○◦˚.˚◦○˚୧";
 const TRAINENDS: [&str; 5] = [" ", "█", " █", "█", "█"];
@@ -27,7 +28,7 @@ fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> Strin
                 g: 70,
                 b: 70,
             };
-        let len = seg.text.len();
+        let len = seg.text.graphemes(true).count();
         buf.push_str(str::repeat(" ", space_front - 3).as_str());
         buf.push_str(darkercol.as_foreground().as_str());
         //buf.push('╭');

@@ -36,6 +36,7 @@ name = "proompt"
 version = "0.1.0"
 dependencies = [
  "rand",
+ "unicode-segmentation",
 ]
 
 [[package]]
@@ -67,6 +68,12 @@ checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
 ]
+
+[[package]]
+name = "unicode-segmentation"
+version = "1.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1dd624098567895118886609431a7c3b8f516e41d30e0643f03d94592a147e36"
 
 [[package]]
 name = "wasi"
