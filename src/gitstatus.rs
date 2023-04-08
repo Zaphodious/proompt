@@ -74,12 +74,12 @@ impl Display for StagingStatus {
 pub fn parse_git_status(porcelain: String) -> Option<GitStatus> {
     let lines: Vec<&str> = porcelain.split("\n").collect();
     let mut status = GitStatus::default();
-    dbg!(&lines);
+    //dbg!(&lines);
     for line in &lines {
         let words = line.split(" ").peekable();
         parse_status_line(&mut status, words)?
     }
-    dbg!(&status);
+    //dbg!(&status);
     return Some(status);
 }
 
