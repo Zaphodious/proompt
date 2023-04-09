@@ -166,8 +166,6 @@ impl ProgramInput {
             }
         }
 
-        if let Some(g) = &input.gitstatus {}
-
         input
     }
     pub fn theme_col_fg(&self) -> String {
