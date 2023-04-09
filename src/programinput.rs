@@ -140,6 +140,17 @@ impl ProgramInput {
                 "-c" => {
                     let carrot = args.next().unwrap_or(input.carrot);
                     input.carrot = carrot;
+                    let nope = "-nope".to_string();
+                    let a = args.peek().unwrap_or(&nope);
+                    if !a.starts_with('-') {
+                        input.carrotfg = a.as_str().into();
+                        args.next();
+                    }
+                    let a = args.peek().unwrap_or(&nope);
+                    if !a.starts_with('-') {
+                        input.carrotbg = Some(a.as_str().into());
+                        args.next();
+                    }
                 }
                 "-g" => {
                     let status = args.next().unwrap_or("".to_string());

@@ -64,7 +64,7 @@ Note that this feature might not work in a broken or non-standard repo.
 | Argument | Flag | Parameters | Default | Note |
 | --- | --- | --- | --- | --- |
 | User ID | -i | number | 1 | Used to detect if root. Please always pass. |
-| Prompt Carrot | -c | string | 🮲🮳 | Default requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
+| Prompt Carrot | -c | string foreground-color (optional) background-color (optional) | 🮲🮳 ffffff None/transparent| Default carrot requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
 | Theme | -t | theme-name color (optional) root-color (optional) motd (optional) | trains | Currently, only "trains" exists. Colors and motd used depending on theme |
 | Section | -s | background-color foreground-color string | None | Displays the string as a section using the indicated colors |
 | Solo Mode | --solo | None | None | Renders without the extra control strings used by the bash prompt system |
