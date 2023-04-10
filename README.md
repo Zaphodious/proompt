@@ -93,14 +93,18 @@ Note that this feature might not work in a broken or non-standard repo.
 - powerline_split
     - Uses --separators, -c, -w, and --break
     - Section primary-color is background, secondary-color is text color
+- showcase 
+     - Displays each of the themes using the provided input
 
-# Example
+### Showcase
 
-Trains theme!
+Displayed: the output of [showcase.sh](showcase.sh), which uses the
+"showcase" theme to display how each theme displays the provided input. Note 
+the tight spacing- the themes display section text exactly as passed in.
 
-![Example of trains theme](trains_example.png)
+![Showcase of themes](showcase.png)
 
-Font is the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
+Shown using the [Comic Mono Nerd Font](https://github.com/xtevenx/ComicMonoNF)
 
 # Question?
 

@@ -19,14 +19,12 @@ fn make_line(input: &ProgramInput) -> String {
         buf.push_str(sec.primary.as_background().as_str());
         buf.push_str(sec.secondary.as_foreground().as_str());
         buf.push_str(sec.to_string().as_str());
-        buf.push(' ');
         buf.push_str(CLEARCOL);
         if let Some(psec) = sections.peek() {
             buf.push_str(psec.primary.as_background().as_str());
         }         
         buf.push_str(sec.primary.as_foreground().as_str());
         buf.push_str(input.separators.1.as_str());
-        buf.push(' ');
         buf.push_str(CLEARCOL);
     }
     return buf;

@@ -1,5 +1,5 @@
 use crate::programinput::ProgramInput;
-use crate::rgb::{CLEARCOL, RGB};
+use crate::rgb::CLEARCOL;
 use unicode_segmentation::UnicodeSegmentation;
 
 fn make_line(input: &ProgramInput) -> String {
@@ -16,8 +16,6 @@ fn make_line(input: &ProgramInput) -> String {
     let center_i: f32 = ((total_secs) / 2) as f32;
     let pre_splits = center_i as usize + 2;
     let post_splits = total_secs - center_i as usize + 2;
-    dbg!(pre_splits);
-    dbg!(post_splits);
     let content_width = (&input.sections)
         .into_iter()
         .filter(|x| x.visible)
@@ -27,7 +25,7 @@ fn make_line(input: &ProgramInput) -> String {
         .sum::<usize>()
         + input.separators.0.graphemes(true).count() * post_splits
         + input.separators.1.graphemes(true).count() * pre_splits
-        + 3
+        + 1
         ;
     let side_width: usize = input.termwidth.saturating_sub(content_width) / 2;
     buf.push_str(str::repeat(" ", side_width).as_str());

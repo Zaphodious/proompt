@@ -1,5 +1,5 @@
 use crate::programinput::ProgramInput;
-use crate::rgb::{RGB, CLEARCOL};
+use crate::rgb::CLEARCOL;
 use rand::prelude::*;
 use rand::seq::SliceRandom;
 use unicode_segmentation::UnicodeSegmentation;
