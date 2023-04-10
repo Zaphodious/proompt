@@ -100,7 +100,7 @@ Note that this feature might not work in a broken or non-standard repo.
 
 Displayed: the output of [showcase.sh](showcase.sh), which uses the
 "showcase" theme to display how each theme displays the provided input. Note 
-the tight spacing- the themes display section text exactly as passed in.
+the tight spacing: the themes display section text exactly as passed in.
 
 ![Showcase of themes](showcase.png)
 
