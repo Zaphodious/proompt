@@ -18,12 +18,13 @@ should also be installed on your system.
 
 # Usage
 
-The command accepts several arguments. The -i, -c, -g, and -t flags are one-time,
+The command accepts several arguments. The -i, -c, -g, -w, and -t flags are one-time,
 while any number of -s (Section) and --git-s (Git Section) flags can be passed in and are what make up
 the prompt's content.
 
 Colors are accepted in six-digit hex format (eg. ff00aa, f76c59, 07102e),
-relying on full-color support from the terminal.
+relying on full-color support from the terminal. The spcific way that 
+"primary" and "secondary" colors are used depends on the theme.
 
 Please always pass the ID of the current 
 user via -i, as the program uses this to determine if it is running in a root
@@ -64,14 +65,38 @@ Note that this feature might not work in a broken or non-standard repo.
 | Argument | Flag | Parameters | Default | Note |
 | --- | --- | --- | --- | --- |
 | User ID | -i | number | 1 | Used to detect if root. Please always pass. |
-| Prompt Carrot | -c | string foreground-color (optional) background-color (optional) | 🮲🮳 ffffff None/transparent| Default carrot requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
-| Theme | -t | theme-name color (optional) root-color (optional) motd (optional) | trains | Currently, only "trains" exists. Colors and motd used depending on theme |
-| Section | -s | background-color foreground-color string | None | Displays the string as a section using the indicated colors |
+| Theme | -t | theme-name color (optional) root-color (optional) | trains | See ['Themes'](#themes) for theme options. Colors used depending on theme |
+| Prompt Carrot | -c | string primary-color (optional) secondary-color (optional) | "🮲🮳" ffffff None/transparent| Used depending on theme (colors may also be overridden). Default carrot requires [font support](https://fonts.google.com/noto/specimen/Noto+Sans+Symbols+2) |
+| Terminal Width | -w | cols | 80 | Used by some themes to compute positioning |
+| Separators | --separators | left right | "" "" | Usage dependant on theme |
+| Section | -s | primary-color secondary-color string | None | Displays the string as a section using the indicated colors |
+| Break | --break | None | None | Tells the theme where a break is to occur. Not all themes utalize breaks |
 | Solo Mode | --solo | None | None | Renders without the extra control strings used by the bash prompt system |
 | Git Info | -g | output of `$(git status --porcelain=v2 --branch 2>&1)` | None | Used to compute other git display modules |
-| Git Section | --git-s | status background-color foreground-color text (optional) | The template string " @b ↑@+ ↓@-" | Displayed if the status is either "all", or matches the repo status (see [the git section](#git)) |
+| Git Section | --git-s | status primary-color secondary-color text (optional) | The template string " @b ↑@+ ↓@-" | Displayed if the status is either "all", or matches the repo status (see [the git section](#git)) |
+
+
+## Themes
+
+- trains 
+    - Uses -c
+    - Section primary-color is background, secondary-color is text color
+- powerline
+    - Uses --separators and -c
+    - Section primary-color is background, secondary-color is text color
+- powerline_naked
+    - Uses --separators and -c
+    - Section primary-color is text color, secondary-color is not used
+- powerline_central
+    - Uses --separators, -c, and -w
+    - Section primary-color is background, secondary-color is text color
+- powerline_split
+    - Uses --separators, -c, -w, and --break
+    - Section primary-color is background, secondary-color is text color
 
 # Example
+
+Trains theme!
 
 ![Example of trains theme](trains_example.png)
 
@@ -88,7 +113,7 @@ I wanted to display in my prompt.
 
 Q: But, why do you pass in the user ID and git info?
 
-A: I use this program on multiple Linux distros as well as MacOS and don't want to
+A: I use this program in multiple environments and don't want to
 worry about weird cross-platform compat bugs that arise from system calls 
 going weird. Even with git bash on Windows, passing things in is almost always
 going to work. 
@@ -98,4 +123,8 @@ going to work.
 - More themes 
 - ???
 - Profit...?
+
+# License
+
+This program is licensed under the GPL v3 or any later versions.
 

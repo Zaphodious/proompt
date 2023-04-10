@@ -6,21 +6,20 @@ use std::{env, iter::Peekable};
 
 #[derive(Debug, PartialEq)]
 pub struct Section {
-    pub foreground: RGB,
-    pub background: RGB,
+    pub primary: RGB,
+    pub secondary: RGB,
     pub text: String,
     pub starting: String,
     pub ending: String,
-    pub specialkind: Option<SpecialKind>,
+    pub sectiontype: SectionType,
+    pub visible: bool,
 }
 
 impl Display for Section {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "\x1b[48;2;{}m\x1b[38;2;{}m{}{}{}\x1b[0m",
-            self.background.to_colcode_frag(),
-            self.foreground.to_colcode_frag(),
+            "{}{}{}",
             self.starting,
             self.text,
             self.ending,
@@ -36,8 +35,10 @@ impl Section {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum SpecialKind {
+pub enum SectionType {
+    Normal,
     Git(StagingStatus),
+    Break
 }
 
 #[derive(Debug, PartialEq)]
@@ -47,17 +48,19 @@ pub struct ProgramInput {
     pub neutral_root: RGB,
     pub motd: String,
     pub carrot: String,
-    pub carrotfg: RGB,
-    pub carrotbg: Option<RGB>,
+    pub carrot_primary_col: RGB,
+    pub carrot_secondary_col: Option<RGB>,
     pub sections: Vec<Section>,
     pub isroot: bool,
     pub solo_mode: bool,
     pub gitstatus: Option<GitStatus>,
+    pub termwidth: usize,
+    pub separators: (String, String),
 }
 
 const DEFAULT_STRING: &str = "default";
 const DEFAULT_BG: &str = "000000";
-const DEFAULT_FG: &str = "111111";
+const DEFAULT_FG: &str = "ffffff";
 
 impl ProgramInput {
     pub fn new() -> ProgramInput {
@@ -66,14 +69,16 @@ impl ProgramInput {
             sections: Vec::new(),
             carrot: "🮲 🮳".to_string(),
             //carrotfg: "#e00080".into(),
-            carrotfg: "#FFFFFF".into(),
+            carrot_primary_col: DEFAULT_FG.into(),
             neutral_normal: "#646464".into(),
             neutral_root: "#640000".into(),
             motd: "Don't forget to be awesome!".to_string(),
-            carrotbg: None,
+            carrot_secondary_col: None,
             isroot: false,
             solo_mode: false,
             gitstatus: None,
+            termwidth: 80,
+            separators: ("".to_string(), "".to_string()),
         };
         let mut args = env::args().peekable();
 
@@ -84,6 +89,13 @@ impl ProgramInput {
             match word.as_str() {
                 "-o" => {
                     input.solo_mode = true;
+                },
+                "-w" => {
+                    if let Some(w_s) = args.next() {
+                        if let Ok(w) = w_s.parse::<usize>() {
+                            input.termwidth = w;
+                        }
+                    }
                 }
                 "-t" => {
                     let themename = args.next().unwrap_or(DEFAULT_STRING.to_string());
@@ -107,7 +119,7 @@ impl ProgramInput {
                         }
                     }
                 }
-                "-s" => input.sections.push(make_section(&mut args, "", None)),
+                "-s" => input.sections.push(make_section(&mut args, "", SectionType::Normal)),
                 "--git-s" => {
                     if let Some(g) = &gitstatus_cache {
                         let statuskind = args.next().unwrap();
@@ -123,7 +135,7 @@ impl ProgramInput {
                                 let mut sec = make_section(
                                     &mut args,
                                     gitdefault_line.as_str(),
-                                    Some(SpecialKind::Git(s)),
+                                    SectionType::Git(s),
                                 );
                                 if sec.text != gitdefault_line {
                                     sec.text = g.format_template(sec.text.as_str())
@@ -143,12 +155,12 @@ impl ProgramInput {
                     let nope = "-nope".to_string();
                     let a = args.peek().unwrap_or(&nope);
                     if !a.starts_with('-') {
-                        input.carrotfg = a.as_str().into();
+                        input.carrot_primary_col = a.as_str().into();
                         args.next();
                     }
                     let a = args.peek().unwrap_or(&nope);
                     if !a.starts_with('-') {
-                        input.carrotbg = Some(a.as_str().into());
+                        input.carrot_secondary_col = Some(a.as_str().into());
                         args.next();
                     }
                 }
@@ -161,12 +173,36 @@ impl ProgramInput {
                     gitstatus_cache = gitstatus.clone();
                     input.gitstatus = gitstatus;
                     //dbg!(status);
+                },
+                "--separators" => {
+                    let right = args.next().unwrap_or(input.separators.0);
+                    let left = args.next().unwrap_or(input.separators.1);
+                    input.separators = (right, left);
+                },
+                "--break" => {
+                    let sec: Section = Section {
+                        primary: DEFAULT_BG.into(),
+                        secondary: DEFAULT_FG.into(),
+                        text: "BREAK".to_string(),
+                        ending: ">>>".to_string(),
+                        starting: "<<<".to_string(),
+                        sectiontype: SectionType::Break,
+                        visible: false,
+                    };
+                    input.sections.push(sec);
                 }
                 _ => (),
             }
         }
 
         input
+    }
+    pub fn theme_col(&self) -> RGB {
+        if self.isroot {
+            self.neutral_root
+        } else {
+            self.neutral_normal
+        }
     }
     pub fn theme_col_fg(&self) -> String {
         if self.isroot {
@@ -187,7 +223,7 @@ impl ProgramInput {
 fn make_section(
     args: &mut Peekable<Args>,
     default_text: &str,
-    specialkind: Option<SpecialKind>,
+    sectiontype: SectionType,
 ) -> Section {
     let background: RGB = args
         .next()
@@ -212,11 +248,12 @@ fn make_section(
         }
     };
     Section {
-        foreground,
-        background,
+        primary: background,
+        secondary: foreground,
         text,
         starting: "".to_string(),
         ending: "".to_string(),
-        specialkind,
+        sectiontype,
+        visible: true,
     }
 }

@@ -1,4 +1,4 @@
-use std::{str::FromStr, ops::{Add, Sub}};
+use std::{str::FromStr, ops::{Add, Sub, Div, Mul}};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct RGB {
@@ -46,6 +46,44 @@ impl Sub for RGB {
     }
 
 }
+
+impl Div for RGB {
+    type Output = RGB;
+    fn div(self, rhs: Self) -> Self::Output {
+        let r = self.r.saturating_div(rhs.r);
+        let g = self.r.saturating_div(rhs.g);
+        let b = self.r.saturating_div(rhs.b);
+        RGB {r, g, b}
+    }
+}
+impl Mul<RGB> for RGB {
+    type Output = RGB;
+    fn mul(self, rhs: Self) -> Self::Output {
+        let r = self.r.saturating_mul(rhs.r);
+        let g = self.r.saturating_mul(rhs.g);
+        let b = self.r.saturating_mul(rhs.b);
+        RGB {r, g, b}
+    }
+}
+
+impl Mul<f32> for RGB {
+    type Output = RGB;
+    /*
+    fn mul(self, rhs: Self) -> Self::Output {
+        let r = self.r.saturating_mul(rhs.r);
+        let g = self.r.saturating_mul(rhs.g);
+        let b = self.r.saturating_mul(rhs.b);
+        RGB {r, g, b}
+    }
+    */
+    fn mul(self, rhs: f32) -> Self::Output {
+        let r = (rhs * (self.r as f32)) as u8;
+        let g = (rhs * (self.g as f32)) as u8;
+        let b = (rhs * (self.b as f32)) as u8;
+        RGB {r, g, b}
+    }
+}
+
 
 impl From<&str> for RGB {
     fn from(value: &str) -> Self {

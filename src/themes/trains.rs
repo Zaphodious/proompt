@@ -5,7 +5,7 @@ use rand::seq::SliceRandom;
 use unicode_segmentation::UnicodeSegmentation;
 
 const CLOUD_SYMBOLS: &str = "ع˖⁺⋆୭∞*.⋆｡⋆༶⋆˙⊹୭˚○◦˚.˚◦○˚୧";
-const TRAINENDS: [&str; 5] = [" ", "█", " █", "█", "█"];
+const TRAINENDS: [&str; 3] = [" ", "▐", " ",];
 
 fn rand_clouds(count: usize) -> String {
     let mut rng = thread_rng();
@@ -21,13 +21,11 @@ fn rand_train_end() -> &'static str {
 fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> String {
     let mut buf = input.theme_col_fg().to_string();
     for seg in &input.sections {
-        let col = seg.background;
-        let darkercol = col
-            - RGB {
-                r: 70,
-                g: 70,
-                b: 70,
-            };
+        if !seg.visible {
+            continue;
+        }
+        let col = seg.primary;
+        let darkercol = col * 0.6;
         let len = seg.text.graphemes(true).count();
         buf.push_str(str::repeat(" ", space_front - 3).as_str());
         buf.push_str(darkercol.as_foreground().as_str());
@@ -46,14 +44,14 @@ fn make_top(input: &ProgramInput, space_front: usize, space_end: usize) -> Strin
 }
 
 fn make_bottom(input: &ProgramInput) -> String {
-    let fg = input.carrotfg.as_foreground();
-    let bg = if let Some(r) = input.carrotbg {
+    let fg = input.carrot_primary_col.as_foreground();
+    let bg = if let Some(r) = input.carrot_secondary_col {
        r.as_background()
     } else {
         input.theme_col_bg()
     };
-    let mut buf = format!(
-        "{}█{}{}{} {}{}{}",
+    let buf = format!(
+        "{}█{}{}{} {}{}{}",
         input.theme_col_fg(),
         fg,
         bg,
@@ -62,7 +60,6 @@ fn make_bottom(input: &ProgramInput) -> String {
         input.theme_col_fg(),
         CLEARCOL,
     );
-    buf.push_str("\n");
 
     return buf;
 }
@@ -74,14 +71,18 @@ fn make_mid(input: &ProgramInput) -> String {
     buf.push(' ');
     let mut peaksects = sections.into_iter().peekable();
     while let Some(sec) = peaksects.next() {
-        buf.push_str(sec.background.as_foreground().as_str());
+        if !sec.visible {
+            continue;
+        }
+        buf.push_str(sec.primary.as_foreground().as_str());
         buf.push_str(input.theme_col_bg().as_str());
-        //buf.push('');
-        //buf.push('');
         buf.push_str(rand_train_end());
         //buf.push(' ');
+        buf.push_str(sec.primary.as_background().as_str());
+        buf.push_str(sec.secondary.as_foreground().as_str());
         buf.push_str(sec.to_string().as_str());
-        buf.push_str(sec.background.as_foreground().as_str());
+        buf.push_str(CLEARCOL);
+        buf.push_str(sec.primary.as_foreground().as_str());
         if peaksects.peek().is_some() {
             buf.push_str(input.theme_col_bg().as_str());
         }
@@ -93,7 +94,6 @@ fn make_mid(input: &ProgramInput) -> String {
         }
         buf.push_str(CLEARCOL);
     }
-    buf.push_str(CLEARCOL);
     buf.push_str("\n");
     return buf;
 }
